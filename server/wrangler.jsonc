@@ -15,6 +15,13 @@
 		"directory": "./dist",
 		"binding": "ASSETS",
 	},
+	"kv_namespaces": [
+		{
+			"binding": "FLASHCARDS_KV",
+			"id": "817e895c288a4b318125b53905f2499d",
+			"remote": true,
+		},
+	],
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
