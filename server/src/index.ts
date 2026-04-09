@@ -55,32 +55,6 @@ export default {
 			};
 		});
 
-		registerAppTool(
-			server,
-			'name',
-			{
-				title: 'title',
-				description: 'description',
-				inputSchema: {
-					username: z.string().describe("The user's username. Ask for this before using the tool"),
-					deck: deckSchema,
-				},
-				annotations: {
-					readOnlyHint: false,
-				},
-				_meta: {
-					ui: {
-						resourceUri: WIDGET_URI,
-					},
-				},
-			},
-			async ({ username, deck }) => {
-				return {
-					content: [],
-				};
-			},
-		);
-
 		// create deck
 		registerAppTool(
 			server,
@@ -132,7 +106,7 @@ export default {
 					content: [
 						{
 							type: 'text',
-							text: `Created a ${title} deck with ${cards.length} flashcards`,
+							text: `Created a ${title} deck with ${cards.length} flashcards and ${JSON.stringify(deck)}`,
 						},
 					],
 					structuredContent: { deck, username },
@@ -231,7 +205,7 @@ export default {
 					content: [
 						{
 							type: 'text',
-							text: `Studying ${deck.title} with ${deck.description} opened. ${deck.cards}`,
+							text: `Studying ${deck.title} with ${deck.description} opened. ${JSON.stringify(deck.cards)}`,
 						},
 					],
 					structuredContent: { deck, username, deckId },
@@ -268,17 +242,18 @@ export default {
 
 				if (!deck) {
 					return {
-						content: [{ text: 'Error not found deck', type: 'text' }],
+						content: [{ text: 'Error not found', type: 'text' }],
 						isError: true,
 					};
 				}
 
-				const card = deck.cards.find((card) => card.id === cardId);
+				const card = deck.cards.find((card) => card.id == cardId);
 
 				if (card) {
 					card.status = status;
 				}
-				await env.FLASHCARDS_KV.put(deckId, JSON.stringify(deck));
+
+				await env.FLASHCARDS_KV.put(deckKey, JSON.stringify(deck));
 
 				return {
 					content: [
@@ -309,8 +284,6 @@ export default {
 				_meta: {
 					ui: {
 						visibility: ['app'],
-						// "app"으로 설정하면 UI에서만 해당 툴을 요청할 수 있음.
-						// "model"로 설정하면 AI가 이툴을 보고 호출 할 수 있음.
 					},
 				},
 			},
@@ -321,16 +294,15 @@ export default {
 
 				if (!deck) {
 					return {
-						content: [{ text: 'Error not found deck', type: 'text' }],
+						content: [{ text: 'Error not found', type: 'text' }],
 						isError: true,
 					};
 				}
-
 				for (const card of deck.cards) {
 					card.status = 'new';
 				}
 
-				await env.FLASHCARDS_KV.put(deckId, JSON.stringify(deck));
+				await env.FLASHCARDS_KV.put(deckKey, JSON.stringify(deck));
 
 				return {
 					content: [
