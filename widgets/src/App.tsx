@@ -2,12 +2,9 @@ import { useApp, useHostStyles } from "@modelcontextprotocol/ext-apps/react";
 import { LoadingIndicator } from "@openai/apps-sdk-ui/components/Indicator";
 import { useState } from "react";
 import { type ToolOutput } from "./types";
-import { DeckList } from "./components/deck-list";
-import { FlashcardStudy } from "./components/flashcard-study";
 
 function App() {
   const [toolOutput, setToolOutput] = useState<ToolOutput | null>(null);
-  const [viewUUID, setViewUUID] = useState<string | null>(null);
 
   const { app, error } = useApp({
     appInfo: { name: "Flashcards Client", version: "1.0" },
@@ -16,9 +13,6 @@ function App() {
       app.ontoolresult = (result) => {
         if (result.structuredContent) {
           setToolOutput(result.structuredContent as unknown as ToolOutput);
-        }
-        if (result._meta) {
-          setViewUUID(result._meta.viewUUID as unknown as string);
         }
       };
     },
@@ -31,21 +25,6 @@ function App() {
       <div className="flex items-center justify-center min-h-50 text-red-500">
         Error: {error.message}
       </div>
-    );
-  }
-
-  if (toolOutput && "decks" in toolOutput) {
-    return <DeckList decks={toolOutput.decks} />;
-  }
-
-  if (toolOutput && "deck" in toolOutput) {
-    return (
-      <FlashcardStudy
-        deck={toolOutput.deck}
-        viewUUID={viewUUID}
-        app={app}
-        username={"username" in toolOutput ? toolOutput.username : "anonymous"}
-      />
     );
   }
 

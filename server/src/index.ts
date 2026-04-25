@@ -56,6 +56,27 @@ export default {
 			};
 		});
 
+		registerAppTool(
+			server,
+			'hello-world',
+			{
+				title: 'helloWorld',
+				description: "Just print 'hello world'",
+				inputSchema: { username: z.string() },
+				_meta: { resourceUri: WIDGET_URI },
+			},
+			async () => {
+				return {
+					content: [
+						{
+							type: 'text',
+							text: 'Hello',
+						},
+					],
+				};
+			},
+		);
+
 		// create deck
 		registerAppTool(
 			server,
