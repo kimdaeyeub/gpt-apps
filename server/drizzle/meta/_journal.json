@@ -15,6 +15,13 @@
       "when": 1777124820409,
       "tag": "0001_yielding_rattler",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1777127063228,
+      "tag": "0002_strange_ben_urich",
+      "breakpoints": true
     }
   ]
 }
